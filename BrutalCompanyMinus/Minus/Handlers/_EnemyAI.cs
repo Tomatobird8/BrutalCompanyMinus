@@ -24,48 +24,10 @@ namespace BrutalCompanyMinus.Minus.Handlers
             }
         }
 
-        [HarmonyPostfix]
-        [HarmonyPatch("Start")]
-        private static void OnStart(ref EnemyAI __instance) // Set isOutside and scale hp
-        {
-            __instance.StartCoroutine(UpdateHP(__instance));
-            
-            try
-            {
-                GameObject terrainMap = Manager.terrainObject;
-
-                float y = -100.0f;
-                if (terrainMap != null) y = terrainMap.transform.position.y - 100.0f;
-
-                if (__instance.transform.position.y > y)
-                {
-                    __instance.isOutside = true;
-                    __instance.allAINodes = GameObject.FindGameObjectsWithTag("OutsideAINode"); // Otherwise AI would be fucked
-                    if (GameNetworkManager.Instance.localPlayerController != null)
-                    {
-                        __instance.EnableEnemyMesh(!StartOfRound.Instance.hangarDoorsClosed || !GameNetworkManager.Instance.localPlayerController.isInHangarShipRoom);
-                    }
-                    __instance.SyncPositionToClients();
-                }
-                else
-                {
-                    __instance.isOutside = false;
-                    __instance.allAINodes = GameObject.FindGameObjectsWithTag("AINode");
-                    __instance.SyncPositionToClients();
-                }
-            } catch
-            {
-                Log.LogError("Failed to set isOutside on EnemyAI.Start");
-            }
-
-
-        }
-
         private static IEnumerator UpdateHP(EnemyAI __instance)
         {
             yield return new WaitUntil(() => Net.Instance.receivedSyncedValues);
             __instance.enemyHP = (int)Mathf.Clamp(__instance.enemyHP + Manager.bonusEnemyHp, 1.1f, 99999999.0f);
         }
-
     }
 }

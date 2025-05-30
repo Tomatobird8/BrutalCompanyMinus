@@ -19,13 +19,14 @@ using static BrutalCompanyMinus.Configuration;
 
 namespace BrutalCompanyMinus
 {
+    [BepInDependency("AudioKnight.StarlancerAIFix", BepInDependency.DependencyFlags.HardDependency)]
     [HarmonyPatch]
     [BepInPlugin(GUID, NAME, VERSION)]
     internal class Plugin : BaseUnityPlugin
     {
         private const string GUID = "Drinkable.BrutalCompanyMinus";
         private const string NAME = "BrutalCompanyMinus";
-        private const string VERSION = "0.13.11";
+        private const string VERSION = "0.13.12";
         private static readonly Harmony harmony = new Harmony(GUID);
 
         void Awake()
