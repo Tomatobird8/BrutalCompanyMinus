@@ -1,20 +1,9 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 using BepInEx;
 using UnityEngine;
 using System.Reflection;
-using System.Collections;
-using BrutalCompanyMinus.Minus;
-using System.Collections.Generic;
 using BrutalCompanyMinus.Minus.Handlers;
-using UnityEngine.Diagnostics;
-using GameNetcodeStuff;
-using Unity.Netcode;
-using UnityEngine.InputSystem.HID;
-using Discord;
-using System.Diagnostics;
 using BepInEx.Configuration;
-using System.Globalization;
 using static BrutalCompanyMinus.Configuration;
 
 namespace BrutalCompanyMinus
@@ -26,7 +15,7 @@ namespace BrutalCompanyMinus
     {
         private const string GUID = "Drinkable.BrutalCompanyMinus";
         private const string NAME = "BrutalCompanyMinus";
-        private const string VERSION = "0.13.12";
+        private const string VERSION = "0.13.13";
         private static readonly Harmony harmony = new Harmony(GUID);
 
         void Awake()
