@@ -36,7 +36,7 @@ namespace BrutalCompanyMinus
             mimicsPresent = false,
             footballPresent = false,
             emergencyDicePresent = false,
-            toilheadPresent = false,
+            // toilheadPresent = false,
             goldScrapPresent = false,
             cullFactoryPresent = false,
             moonsweptPresent = false,
@@ -166,7 +166,7 @@ namespace BrutalCompanyMinus
             lockerPresent = IsModPresent("com.zealsprince.locker", "Locker and NoLocker event will now occur.", new Lockers(), new NoLockers());
             theGiantSpecimensPresent = IsModPresent("TheGiantSpecimens", "GiantShowdown event will now occur.", new GiantShowdown());
             footballPresent = IsModPresent("Kittenji.FootballEntity", "Football event will now occur.", new Football());
-            toilheadPresent = IsModPresent("com.github.zehsteam.ToilHead", "Toilhead event will now occur", new ToilHead());
+            // toilheadPresent = IsModPresent("com.github.zehsteam.ToilHead", "Toilhead event will now occur", new ToilHead());
             emergencyDicePresent = IsModPresent("Theronguard.EmergencyDice", "BadDice and Dice events will now occur.", new BadDice(), new Dice());
             goldScrapPresent = IsModPresent("LCGoldScrapMod", "CityOfGold event will now occur", new CityOfGold());
             moonsweptPresent = IsModPresent("MoonsweptTeam.Moonswept", "Cleaner and MobileTurrets events will now occur", new Cleaners(), new MobileTurrets());

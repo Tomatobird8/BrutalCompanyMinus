@@ -43,14 +43,17 @@ namespace BrutalCompanyMinus.Minus.Events
             };
         }
 
-        public override bool AddEventIfOnly() => Compatibility.toilheadPresent;
+        public override bool AddEventIfOnly() => false; // Compatibility.toilheadPresent;
 
         public override void Execute()
         {
+            return;
+            /*
             if (!Compatibility.toilheadPresent) return;
             Assets.antiCoilHead.enemyName = "Spring";
             ExecuteAllMonsterEvents();
             com.github.zehsteam.ToilHead.Api.forceSpawns = true;
+            */
         }
     }
 }

@@ -870,7 +870,8 @@ namespace BrutalCompanyMinus.Minus
             SampleMap();
 
             // Client side objects
-            Spawn.randomSeedValue = StartOfRound.Instance.randomMapSeed + 2 + Net.Instance.GiveSeed(); // Reset seed value
+            Net.Instance.GiveSeedServerRpc(1);
+            Spawn.randomSeedValue = StartOfRound.Instance.randomMapSeed + 2 + Net.Instance._seed; // Reset seed value
             RoundManager.Instance.StartCoroutine(DelayedExecution());
 
             // Net objects

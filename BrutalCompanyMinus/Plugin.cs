@@ -15,7 +15,7 @@ namespace BrutalCompanyMinus
     {
         private const string GUID = "Drinkable.BrutalCompanyMinus";
         private const string NAME = "BrutalCompanyMinus";
-        private const string VERSION = "0.13.13";
+        private const string VERSION = "0.13.14";
         private static readonly Harmony harmony = new Harmony(GUID);
 
         void Awake()
@@ -24,10 +24,10 @@ namespace BrutalCompanyMinus
             Log.Initalize(Logger);
 
             // Required for netweaving
-            var EventTypes = Assembly.GetExecutingAssembly().GetTypes();
-            foreach (var EventType in EventTypes)
+            var types = Assembly.GetExecutingAssembly().GetTypes();
+            foreach (var type in types)
             {
-                var methods = EventType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                var methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
                 foreach (var method in methods)
                 {
                     var attributes = method.GetCustomAttributes(typeof(RuntimeInitializeOnLoadMethodAttribute), false);
@@ -37,7 +37,7 @@ namespace BrutalCompanyMinus
                     }
                 }
             }
-            
+
             // Load assets
             Assets.Load();
 

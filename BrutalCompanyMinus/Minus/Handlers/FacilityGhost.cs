@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
-using com.github.zehsteam.ToilHead.MonoBehaviours;
+//using com.github.zehsteam.ToilHead.MonoBehaviours;
 using BrutalCompanyMinus.Minus.Events;
 using BrutalCompanyMinus.Minus.MonoBehaviours;
 using static UnityEngine.GraphicsBuffer;
@@ -104,7 +104,7 @@ namespace BrutalCompanyMinus.Minus.Handlers
                         {
                             if (Convert.ToBoolean(rng.Next(2))) RoundManager.Instance.StartCoroutine(DisableTurret(turret));
                         }
-                        if (Compatibility.toilheadPresent) AttemptToDisableToilHeadTurrets();
+                        // if (Compatibility.toilheadPresent) AttemptToDisableToilHeadTurrets();
                         break;
                     case 7:
                         Log.LogInfo("Facility ghost attempts to disable landmines");
@@ -143,12 +143,13 @@ namespace BrutalCompanyMinus.Minus.Handlers
                                 _turret.EnterBerserkModeServerRpc((int)GameNetworkManager.Instance.localPlayerController.playerClientId);
                             }
                         }
-                        if (Compatibility.toilheadPresent) AttemptToRageToilHeadTurrets();
+                        // if (Compatibility.toilheadPresent) AttemptToRageToilHeadTurrets();
                         break;
                 }
             }
         }
 
+        /*
         private static void AttemptToDisableToilHeadTurrets()
         {
             ToilHeadTurretBehaviour[] turrets = GameObject.FindObjectsOfType<ToilHeadTurretBehaviour>();
@@ -174,14 +175,15 @@ namespace BrutalCompanyMinus.Minus.Handlers
                 }
             }
         }
-
+        */
         private static IEnumerator DisableTurret(Turret turret)
         {
             turret.ToggleTurretEnabled(false);
             yield return new WaitForSeconds(7.0f);
             turret.ToggleTurretEnabled(true);
         }
-        
+
+        /*
         private static IEnumerator DisableToilHeadTurret(object toilheadTurretobj) // Harmony why do you make me do this crap???
         {
             ToilHeadTurretBehaviour toilheadTurret = (ToilHeadTurretBehaviour)toilheadTurretobj;
@@ -189,6 +191,7 @@ namespace BrutalCompanyMinus.Minus.Handlers
             yield return new WaitForSeconds(7.0f);
             toilheadTurret.ToggleTurretEnabled(true);
         }
+        */
 
         private static IEnumerator DisableLandmine(Landmine landmine)
         {

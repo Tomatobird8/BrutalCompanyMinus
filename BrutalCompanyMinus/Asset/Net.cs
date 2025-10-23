@@ -103,11 +103,26 @@ namespace BrutalCompanyMinus
             base.OnNetworkDespawn();
         }
 
-        [ServerRpc]
-        public FixedString4096Bytes GetSyncedTextServerRpc() => textUI.Value;
+        [ServerRpc(RequireOwnership = false)]
+        public void GetSyncedTextServerRpc() => SetSyncedTextClientRpc(textUI.Value);
+
+        [ClientRpc]
+        public void SetSyncedTextClientRpc(FixedString4096Bytes value)
+        {
+            textUI.Value = value;
+        }
 
         [ServerRpc(RequireOwnership = false)]
-        public int GiveSeed() => _seed++;
+        public void GiveSeedServerRpc(int increment)
+        {
+            SetSeedClientRpc(_seed + increment);
+        }
+
+        [ClientRpc]
+        public void SetSeedClientRpc(int value)
+        {
+            _seed = value;
+        }
 
         [ClientRpc]
         public void ClearGameObjectsClientRpc()
@@ -151,7 +166,7 @@ namespace BrutalCompanyMinus
             receivedSyncedValues = true;
         }
 
-        [ServerRpc]
+        [ServerRpc(RequireOwnership = false)]
         public void SyncScrapValueServerRpc(NetworkObjectReference obj, int value)
         {
             SyncScrapValueClientRpc(obj, value);
@@ -523,6 +538,7 @@ namespace BrutalCompanyMinus
             BlackFridayClientRpc(minPercentageCut, maxPercentageCut, _seed++);
         }
 
+        [ClientRpc]
         public void BlackFridayClientRpc(int minPercentageCut, int maxPercentageCut, int seed)
         {
             System.Random rng = new System.Random(seed);

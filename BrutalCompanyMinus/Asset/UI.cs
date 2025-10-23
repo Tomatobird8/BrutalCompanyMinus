@@ -104,7 +104,8 @@ namespace BrutalCompanyMinus
                 keyboard.onTextInput += OnKeyboardInput;
             }
 
-            panelText.text = Net.Instance.GetSyncedTextServerRpc().ToString();
+            Net.Instance.GetSyncedTextServerRpc();
+            panelText.text = Net.Instance.textUI.Value.ToString();
         }
 
         void Update()
