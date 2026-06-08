@@ -104,7 +104,10 @@ namespace BrutalCompanyMinus
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void GetSyncedTextServerRpc() => SetSyncedTextClientRpc(textUI.Value);
+        public void GetSyncedTextServerRpc()
+        {
+            SetSyncedTextClientRpc(textUI.Value);
+        }
 
         [ClientRpc]
         public void SetSyncedTextClientRpc(FixedString4096Bytes value)
@@ -173,14 +176,17 @@ namespace BrutalCompanyMinus
         }
 
         [ClientRpc]
-        private void SyncScrapValueClientRpc(NetworkObjectReference obj, int value)
+        public void SyncScrapValueClientRpc(NetworkObjectReference obj, int value)
         {
             obj.TryGet(out NetworkObject netObj);
             netObj.GetComponent<GrabbableObject>().SetScrapValue(value);
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void GenerateAndSyncTerminalCodeServerRpc(NetworkObjectReference netObject, int code) => GenerateAndSyncTerminalCodeClientRpc(netObject, code);
+        public void GenerateAndSyncTerminalCodeServerRpc(NetworkObjectReference netObject, int code)
+        {
+            GenerateAndSyncTerminalCodeClientRpc(netObject, code);
+        }
 
         [ClientRpc]
         public void GenerateAndSyncTerminalCodeClientRpc(NetworkObjectReference netObject, int code)
@@ -204,7 +210,10 @@ namespace BrutalCompanyMinus
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void MoveTimeServerRpc(float amount, float speedMultiplier = 1.0f) => MoveTimeClientRpc(amount, speedMultiplier);
+        public void MoveTimeServerRpc(float amount, float speedMultiplier = 1.0f)
+        {
+            MoveTimeClientRpc(amount, speedMultiplier);
+        }
 
         [ClientRpc]
         public void MoveTimeClientRpc(float amount, float speedMultiplier)
@@ -236,7 +245,7 @@ namespace BrutalCompanyMinus
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void InitalizeCurrentWeatherMultipliersServerRpc()
+        public void InitalizeCurrentWeatherMultipliersServerRpc()
         {
             currentWeatherMultipliers = Weather.InitalizeWeatherMultipliers(currentWeatherMultipliers);
             UpdateCurrentWeatherMultipliersServerRpc();
@@ -249,31 +258,58 @@ namespace BrutalCompanyMinus
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void SetRecievedServerRpc(bool state) => SetRecievedClientRpc(state);
+        public void SetRecievedServerRpc(bool state)
+        {
+            SetRecievedClientRpc(state);
+        }
 
         [ClientRpc]
-        public void SetRecievedClientRpc(bool state) => receivedSyncedValues = state;
+        public void SetRecievedClientRpc(bool state)
+        {
+            receivedSyncedValues = state;
+        }
 
         [ServerRpc(RequireOwnership = false)]
-        public void SetRealityShiftActiveServerRpc(bool state) => SetRealityShiftActiveClientRpc(state);
+        public void SetRealityShiftActiveServerRpc(bool state)
+        {
+            SetRealityShiftActiveClientRpc(state);
+        }
 
         [ClientRpc]
-        public void SetRealityShiftActiveClientRpc(bool state) => Minus.Events.RealityShift.Active = state;
+        public void SetRealityShiftActiveClientRpc(bool state)
+        {
+            Minus.Events.RealityShift.Active = state;
+        }
 
         [ServerRpc(RequireOwnership = false)]
-        public void SetAllWeatherActiveServerRpc(bool state) => SetAllWeatherActiveClientRpc(state);
+        public void SetAllWeatherActiveServerRpc(bool state)
+        {
+            SetAllWeatherActiveClientRpc(state);
+        }
 
         [ClientRpc]
-        public void SetAllWeatherActiveClientRpc(bool state) => Minus.Events.AllWeather.Active = state;
+        public void SetAllWeatherActiveClientRpc(bool state)
+        {
+            Minus.Events.AllWeather.Active = state;
+        }
 
         [ServerRpc(RequireOwnership = false)]
-        public void MessWithLightsServerRpc() => MessWithLightsClientRpc();
+        public void MessWithLightsServerRpc()
+        {
+            MessWithLightsClientRpc();
+        }
 
         [ClientRpc]
-        public void MessWithLightsClientRpc() => RoundManager.Instance.FlickerLights(true, true);
+        public void MessWithLightsClientRpc()
+        {
+            RoundManager.Instance.FlickerLights(true, true);
+        }
 
         [ServerRpc(RequireOwnership = false)]
-        public void MessWithBreakerServerRpc(bool state) => MessWithBreakerClientRpc(state);
+        public void MessWithBreakerServerRpc(bool state)
+        {
+            MessWithBreakerClientRpc(state);
+        }
 
         [ClientRpc]
         public void MessWithBreakerClientRpc(bool state)
@@ -488,10 +524,16 @@ namespace BrutalCompanyMinus
         }
 
         [ClientRpc]
-        public void AddObjectToGrabToListClientRpc(NetworkObjectReference obj) => Minus.Handlers.RealityShift.shiftedObjects.Add(obj);
+        public void AddObjectToGrabToListClientRpc(NetworkObjectReference obj)
+        {
+            Minus.Handlers.RealityShift.shiftedObjects.Add(obj);
+        }
 
         [ServerRpc(RequireOwnership = false)]
-        public void GenerateShiftableObjectsListServerRpc(NetworkObjectReference[] spawnedScrap) => GenerateShiftableObjectsListClientRpc(spawnedScrap);
+        public void GenerateShiftableObjectsListServerRpc(NetworkObjectReference[] spawnedScrap)
+        {
+            GenerateShiftableObjectsListClientRpc(spawnedScrap);
+        }
 
         [ClientRpc]
         public void GenerateShiftableObjectsListClientRpc(NetworkObjectReference[] spawnedScrap)
@@ -514,7 +556,10 @@ namespace BrutalCompanyMinus
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void FireAtServerRpc(Vector3 at, Vector3 from) => FireAtClientRpc(at, from);
+        public void FireAtServerRpc(Vector3 at, Vector3 from)
+        {
+            FireAtClientRpc(at, from);
+        }
 
         [ClientRpc]
         public void FireAtClientRpc(Vector3 at, Vector3 from)

@@ -18,7 +18,7 @@ namespace BrutalCompanyMinus.Minus.Handlers
             if (!Compatibility.mimicsPresent) return;
             for(int i = 0; i < 6; i++)
             {
-                Compatibility.mimicNetworkSpawnChances[i].Value = Clamp(spawnRateScales[i].Compute(EventType.Bad));
+                Compatibility.mimicNetworkSpawnChances[i].Value = Clamp(spawnRateScales[i].Compute(MEvent.EventType.Bad));
             }
         }
 

@@ -674,9 +674,7 @@ namespace BrutalCompanyMinus.Minus
                 Log.LogError("Enemy prefab is null on AddEnemyToPoolWithRarity(), returning.");
                 return;
             }
-            SpawnableEnemyWithRarity spawnableEnemyWithRarity = new SpawnableEnemyWithRarity();
-            spawnableEnemyWithRarity.enemyType = enemy;
-            spawnableEnemyWithRarity.rarity = rarity;
+            SpawnableEnemyWithRarity spawnableEnemyWithRarity = new SpawnableEnemyWithRarity(enemy, rarity);
             list.Add(spawnableEnemyWithRarity);
         }
 

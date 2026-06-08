@@ -254,7 +254,7 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
             }
         }
 
-        protected override void __initializeVariables()
+        public override void __initializeVariables()
         {
             base.__initializeVariables();
         }

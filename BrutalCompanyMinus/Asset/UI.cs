@@ -293,7 +293,7 @@ namespace BrutalCompanyMinus
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.SetDiscordStatusDetails))]
+        [HarmonyPatch(typeof(DiscordController), nameof(DiscordController.UpdateStatus))] //TODO: wrong method?
         private static void OnChangeLevel(ref StartOfRound __instance)
         {
             if (!NetworkManager.Singleton.IsServer || !canClearText) return;

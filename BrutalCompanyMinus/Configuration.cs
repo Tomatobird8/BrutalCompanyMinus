@@ -232,11 +232,10 @@ namespace BrutalCompanyMinus
                     SpawnableItemWithRarity[] newScrapTransmuations = new SpawnableItemWithRarity[e.scrapTransmutationEvent.items.Length];
                     for(int i = 0; i < e.scrapTransmutationEvent.items.Length; i++)
                     {
-                        newScrapTransmuations[i] = new SpawnableItemWithRarity()
-                        {
-                            spawnableItem = GetItem(toConfig.Bind(e.Name(), $"Scrap {i} name", e.scrapTransmutationEvent.items[i].spawnableItem.name, "Inputting an invalid scrap name will cause it to return an empty item").Value),
-                            rarity = toConfig.Bind(e.Name(), $"{e.scrapTransmutationEvent.items[i].spawnableItem.name} Rarity", e.scrapTransmutationEvent.items[i].rarity).Value
-                        };
+                        newScrapTransmuations[i] = new SpawnableItemWithRarity(
+                            GetItem(toConfig.Bind(e.Name(), $"Scrap {i} name", e.scrapTransmutationEvent.items[i].spawnableItem.name, "Inputting an invalid scrap name will cause it to return an empty item").Value), 
+                            toConfig.Bind(e.Name(), $"{e.scrapTransmutationEvent.items[i].spawnableItem.name} Rarity", e.scrapTransmutationEvent.items[i].rarity).Value
+                            );
                     }
                     transmutationEvents.Add(new ScrapTransmutationEvent(amount, newScrapTransmuations));
                 }
@@ -363,22 +362,22 @@ namespace BrutalCompanyMinus
                     newEvents.Add(e);
                     switch(e.Type)
                     {
-                        case EventType.VeryBad:
+                        case MEvent.EventType.VeryBad:
                             EventManager.allVeryBad.Add(e);
                             break;
-                        case EventType.Bad:
+                        case MEvent.EventType.Bad:
                             EventManager.allBad.Add(e);
                             break;
-                        case EventType.Neutral:
+                        case MEvent.EventType.Neutral:
                             EventManager.allNeutral.Add(e);
                             break;
-                        case EventType.Good:
+                        case MEvent.EventType.Good:
                             EventManager.allGood.Add(e);
                             break;
-                        case EventType.VeryGood:
+                        case MEvent.EventType.VeryGood:
                             EventManager.allVeryGood.Add(e);
                             break;
-                        case EventType.Remove:
+                        case MEvent.EventType.Remove:
                             EventManager.allRemove.Add(e);
                             break;
                     }
