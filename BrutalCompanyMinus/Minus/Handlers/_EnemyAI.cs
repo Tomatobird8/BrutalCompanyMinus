@@ -24,6 +24,13 @@ namespace BrutalCompanyMinus.Minus.Handlers
             }
         }
 
+        [HarmonyPostfix]
+        [HarmonyPatch("Start")]
+        public static void onStart(EnemyAI __instance)
+        {
+            __instance.StartCoroutine(UpdateHP(__instance));
+        }
+
         private static IEnumerator UpdateHP(EnemyAI __instance)
         {
             yield return new WaitUntil(() => Net.Instance.receivedSyncedValues);

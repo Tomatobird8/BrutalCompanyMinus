@@ -51,15 +51,15 @@ namespace BrutalCompanyMinus.Minus.Handlers
             {
                 return;
             }
-            if((int)firstEmptyItemSlot.Invoke(__instance, null) == -1)
-            {
-                return;
-            } 
 
             GrabbableObject grabbableObject = hit.collider.gameObject.GetComponent<GrabbableObject>();
             if (grabbableObject != null && grabbableObject.NetworkObject != null)
             {
-                foreach(int objectID in ShiftableObjects)
+                if ((int)firstEmptyItemSlot.Invoke(__instance, new object[] { grabbableObject }) == -1)
+                {
+                    return;
+                }
+                foreach (int objectID in ShiftableObjects)
                 {
                     if(objectID == grabbableObject.gameObject.GetInstanceID() && UnityEngine.Random.Range(0.0f, 1.0f) <= transmuteChance)
                     {
