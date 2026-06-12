@@ -879,6 +879,7 @@ namespace BrutalCompanyMinus.Minus
         private static IEnumerator DelayedExecution() // Delay this to fix trees not spawning in correctly on clients
         {
             yield return new WaitForSeconds(5.0f);
+            Spawn.randomSeedValue = StartOfRound.Instance.randomMapSeed + 2 + Net.Instance._seed; // Reset seed value
             foreach (OutsideObjectsToSpawn obj in Net.Instance.outsideObjectsToSpawn)
             {
                 Spawn.OutsideObjects(Assets.GetObject((Assets.ObjectName)obj.objectEnumID), new Vector3(0.0f, -1.0f, 0.0f), obj.density, -1, 1000); // 1000 cap for trees as such
