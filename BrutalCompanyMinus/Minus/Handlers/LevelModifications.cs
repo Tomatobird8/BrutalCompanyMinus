@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using HarmonyLib;
-using JetBrains.Annotations;
 using Unity.Netcode;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 namespace BrutalCompanyMinus.Minus.Handlers
 {
@@ -33,8 +24,23 @@ namespace BrutalCompanyMinus.Minus.Handlers
         }
 
         [HarmonyPrefix]
+        [HarmonyPatch(typeof(QuickMenuManager), "LeaveGameConfirm")]
+        private static void OnQuitLobby()
+        {
+            if (GameNetworkManager.Instance != null && !HUDManager.Instance.retrievingSteamLeaderboard && Net.Instance.receivedSyncedValues)
+            {
+                ExcecuteOnShipLeave();
+            }
+        }
+
+        [HarmonyPrefix]
         [HarmonyPatch(typeof(StartOfRound), "ShipLeave")]
         public static void OnShipLeave()
+        {
+            ExcecuteOnShipLeave();
+        }
+
+        public static void ExcecuteOnShipLeave()
         {
             EventManager.ExecuteOnShipLeave();
             EventManager.currentEvents.Clear();
