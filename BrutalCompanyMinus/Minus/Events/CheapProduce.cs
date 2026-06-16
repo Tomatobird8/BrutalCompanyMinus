@@ -8,11 +8,11 @@ using UnityEngine;
 
 namespace BrutalCompanyMinus.Minus.Events
 {
-    internal class ChineseProduce : MEvent
+    internal class CheapProduce : MEvent
     {
-        public override string Name() => nameof(ChineseProduce);
+        public override string Name() => nameof(CheapProduce);
 
-        public static ChineseProduce Instance;
+        public static CheapProduce Instance;
 
         public override void Initalize()
         {

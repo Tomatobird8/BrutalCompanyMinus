@@ -9,6 +9,7 @@ using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem.XR;
 using UnityEngine;
 using System.Collections;
+using BrutalCompanyMinus.Minus.Events;
 
 namespace BrutalCompanyMinus.Minus.MonoBehaviours
 {
@@ -199,7 +200,6 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
 
         public override void DoAIInterval()
         {
-
             base.DoAIInterval();
             if (isEnemyDead || StartOfRound.Instance.allPlayersDead)
             {
@@ -211,6 +211,20 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
                 ChooseNestPosition();
                 return;
             }
+            if (RealityShift.Active && HoarderBugItems != null && HoarderBugItems.Count != 0) // RealityShift related
+            {
+                bool needsCleanup = false;
+                for (int i = 0; i < HoarderBugItems.Count; i++)
+                {
+                    if (HoarderBugItems[i] == null || HoarderBugItems[i].itemGrabbableObject == null)
+                    {
+                        needsCleanup = true;
+                        break;
+                    }
+                }
+                if (needsCleanup) HoarderBugItems.RemoveAll(item => item == null || item.itemGrabbableObject == null);
+            }
+
             if (HasLineOfSightToPositionCopy(nestPosition, 60f, 40, 0.5f))
             {
                 for (int i = 0; i < HoarderBugItems.Count; i++)

@@ -26,20 +26,9 @@ namespace BrutalCompanyMinus.Minus.Events
             EventsToRemove = new List<string>() { nameof(SpikeTraps), nameof(Hell) };
         }
 
-        public override bool AddEventIfOnly() => RoundManager.Instance.currentLevel.spawnableMapObjects.ToList().Exists(x => x.prefabToSpawn.name == Assets.ObjectNameList[Assets.ObjectName.SpikeRoofTrap]);
+        public override bool AddEventIfOnly() => Manager.HazardSpawnExists(Assets.ObjectName.SpikeRoofTrap);
 
-        public override void Execute()
-        {
-            AnimationCurve curve = new AnimationCurve(new Keyframe(0f, 0f));
-
-            foreach (SpawnableMapObject obj in RoundManager.Instance.currentLevel.spawnableMapObjects)
-            {
-                if (obj.prefabToSpawn.name == Assets.ObjectNameList[Assets.ObjectName.SpikeRoofTrap])
-                {
-                    obj.numberToSpawn = curve;
-                }
-            }
-        }
+        public override void Execute() => Manager.RemoveHazardSpawn(Assets.ObjectName.SpikeRoofTrap);
 
     }
 }

@@ -33,7 +33,7 @@ namespace BrutalCompanyMinus.Minus.Events
             EventsToSpawnWith = new List<string>() { nameof(Turrets), nameof(Landmines), nameof(OutsideTurrets), nameof(OutsideLandmines), nameof(Trees) };
         }
 
-        public override bool AddEventIfOnly() => RoundManager.Instance.currentLevel.spawnableMapObjects.ToList().Exists(x => x.prefabToSpawn.name == Assets.ObjectNameList[Assets.ObjectName.Turret]) || RoundManager.Instance.currentLevel.spawnableMapObjects.ToList().Exists(x => x.prefabToSpawn.name == Assets.ObjectNameList[Assets.ObjectName.Landmine]);
+        public override bool AddEventIfOnly() => Manager.HazardSpawnExists(Assets.ObjectName.Turret) || Manager.HazardSpawnExists(Assets.ObjectName.Landmine);
 
         public override void Execute() => Active = true;
 

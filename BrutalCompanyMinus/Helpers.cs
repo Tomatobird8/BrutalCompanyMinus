@@ -32,6 +32,23 @@ namespace BrutalCompanyMinus
             return nodes;
         }
 
+        /// <summary>
+        /// Adds an element to an array.
+        /// </summary>
+        /// <param name="toObjects">The array to add an element to.</param>
+        /// <param name="newObject">The new element to be added.</param>
+        /// <returns>A new array with the added element.</returns>
+        public static T[] Add<T>(this T[] toObjects, T newObject)
+        {
+            var newObjects = new T[toObjects.Length + 1];
+            for (int i = 0; i < toObjects.Length; i++)
+            {
+                newObjects[i] = toObjects[i];
+            }
+            newObjects[toObjects.Length] = newObject;
+            return newObjects;
+        }
+        
         internal static int[] IntArray(this float[] Values)
         {
             int[] newValues = new int[Values.Length];
@@ -40,32 +57,6 @@ namespace BrutalCompanyMinus
                 newValues[i] = (int)Values[i];
             }
             return newValues;
-        }
-
-        /// <summary>
-        /// This is primarly used to add landmine, turret and spiketrap spawns to the array.
-        /// </summary>
-        /// <returns>New array with added object.</returns>
-        public static SpawnableMapObject[] Add(this SpawnableMapObject[] toObjects, SpawnableMapObject newObject)
-        {
-            SpawnableMapObject[] newMapObjects = new SpawnableMapObject[toObjects.Length + 1];
-            for(int i = 0; i < toObjects.Length; i++)
-            {
-                newMapObjects[i] = toObjects[i];
-            }
-            newMapObjects[toObjects.Length] = newObject;
-            return newMapObjects;
-        }
-
-        internal static WeatherEffect[] Add(this WeatherEffect[] toObjects, WeatherEffect newObject)
-        {
-            WeatherEffect[] newMapObjects = new WeatherEffect[toObjects.Length + 1];
-            for (int i = 0; i < toObjects.Length; i++)
-            {
-                newMapObjects[i] = toObjects[i];
-            }
-            newMapObjects[toObjects.Length] = newObject;
-            return newMapObjects;
         }
 
         /// <summary>

@@ -70,6 +70,7 @@ namespace BrutalCompanyMinus.Minus.Handlers
             Log.LogInfo("Resetting level values before changing.");
 
             __instance.currentLevel.spawnableMapObjects = Assets.spawnableMapObjects[levelIndex];
+            __instance.currentLevel.indoorMapHazards = Assets.indoorMapHazards[levelIndex];
 
             // Reset spawn chances
             __instance.currentLevel.enemySpawnChanceThroughoutDay.ClearKeys();

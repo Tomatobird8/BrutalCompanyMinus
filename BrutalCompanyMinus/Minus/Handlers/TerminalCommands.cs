@@ -322,6 +322,22 @@ namespace BrutalCompanyMinus.Minus.Handlers
                                     }
                                 }
                             }
+                            if(level.indoorMapHazards != null)
+                            {
+                                text += "\nIndoor Map Hazards:";
+                                foreach(IndoorMapHazard indoorMapHazard in level.indoorMapHazards)
+                                {
+                                    text += $"\n   Prefab Name: {indoorMapHazard.hazardType.prefabToSpawn.name}\n      Spawn Facing Away From Wall: {indoorMapHazard.hazardType.spawnFacingAwayFromWall}, \n      Spawn Facing Wall: {indoorMapHazard.hazardType.spawnFacingWall}\n      Spawn With Back To Wall: {indoorMapHazard.hazardType.spawnWithBackToWall}\n      Spawn With Back Flush Against Wall: {indoorMapHazard.hazardType.spawnWithBackFlushAgainstWall}\n      Require Distance Between Spawns: {indoorMapHazard.hazardType.requireDistanceBetweenSpawns}\n      Disallow Spawning Near Entrances: {indoorMapHazard.hazardType.disallowSpawningNearEntrances}\n      Allow In Mineshaft: {indoorMapHazard.hazardType.allowInMineshaft}";
+                                    if (indoorMapHazard.numberToSpawn != null)
+                                    {
+                                        text += "\n      Number To Spawn:";
+                                        foreach(Keyframe keyframe in indoorMapHazard.numberToSpawn.keys)
+                                        {
+                                            text += $"\n      Time: {keyframe.time}, Value: {keyframe.value}";
+                                        }
+                                    }
+                                }
+                            }
                             if(level.spawnableOutsideObjects != null)
                             {
                                 text += "\nSpawnable Outside Objects:";

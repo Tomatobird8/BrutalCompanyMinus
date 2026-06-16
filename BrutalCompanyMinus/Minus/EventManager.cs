@@ -86,7 +86,7 @@ namespace BrutalCompanyMinus.Minus
             new Events.Jester(),
             new Events.LittleGirl(),
             new Events.AntiCoilhead(),
-            new Events.ChineseProduce(),
+            new Events.CheapProduce(),
             new Events.TransmuteScrapBig(),
             new Events.Warzone(),
             new Events.BugHorde(),

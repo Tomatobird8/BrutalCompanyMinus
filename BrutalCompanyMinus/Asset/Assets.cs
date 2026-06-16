@@ -84,6 +84,7 @@ namespace BrutalCompanyMinus
 
         internal static List<float> factorySizeMultiplierList = new List<float>();
         internal static List<SpawnableMapObject[]> spawnableMapObjects = new List<SpawnableMapObject[]>();
+        internal static List<IndoorMapHazard[]> indoorMapHazards = new List<IndoorMapHazard[]>();
         internal static List<float> averageScrapValueList = new List<float>();
         internal static List<AnimationCurve> insideSpawnChanceCurves = new List<AnimationCurve>(), outsideSpawnChanceCurves = new List<AnimationCurve>(), daytimeSpawnChanceCurves = new List<AnimationCurve>();
         internal static List<int> insideMaxPowerCounts = new List<int>(), outsideMaxPowerCounts = new List<int>(), daytimeMaxPowerCounts = new List<int>();
@@ -239,17 +240,34 @@ namespace BrutalCompanyMinus
             Log.LogInfo("Generating 'ObjectList'");
 
             List<SpawnableMapObject> insideObjectList = new List<SpawnableMapObject>();
+            List<IndoorMapHazard> indoorHazardList = new List<IndoorMapHazard>();
             List<SpawnableOutsideObjectWithRarity> outsideObjectList = new List<SpawnableOutsideObjectWithRarity>();
 
             foreach (SelectableLevel level in StartOfRound.Instance.levels)
             {
-                if (level == null || level.spawnableMapObjects == null) continue;
-                foreach (SpawnableMapObject obj in level.spawnableMapObjects)
+                if (level == null) continue;
+
+                if (level.spawnableMapObjects != null)
                 {
-                    if(obj == null || obj.prefabToSpawn == null) continue;
-                    if (insideObjectList.FindIndex(o => o.prefabToSpawn.name == obj.prefabToSpawn.name) < 0) // If dosent exist in list then add
+                    foreach (SpawnableMapObject obj in level.spawnableMapObjects)
                     {
-                        insideObjectList.Add(obj);
+                        if (obj == null || obj.prefabToSpawn == null) continue;
+                        if (insideObjectList.FindIndex(o => o.prefabToSpawn.name == obj.prefabToSpawn.name) < 0) // If dosent exist in list then add
+                        {
+                            insideObjectList.Add(obj);
+                        }
+                    }
+                }
+
+                if (level.indoorMapHazards != null)
+                {
+                    foreach (IndoorMapHazard obj in level.indoorMapHazards)
+                    {
+                        if (obj == null || obj.hazardType.prefabToSpawn == null) continue;
+                        if (indoorHazardList.FindIndex(o => o.hazardType.prefabToSpawn.name == obj.hazardType.prefabToSpawn.name) < 0) // If dosent exist in list then add
+                        {
+                            indoorHazardList.Add(obj);
+                        }
                     }
                 }
 
@@ -263,7 +281,21 @@ namespace BrutalCompanyMinus
                 }
             }
 
-            foreach (SpawnableMapObject obj in insideObjectList) ObjectList.Add(obj.prefabToSpawn.name, obj.prefabToSpawn);
+            // Combine legacy & new indoor objects
+            Dictionary<string, GameObject> indoorObjectDict = new Dictionary<string, GameObject>();
+
+            foreach (IndoorMapHazard obj in indoorHazardList) indoorObjectDict.Add(obj.hazardType.prefabToSpawn.name, obj.hazardType.prefabToSpawn); 
+
+            foreach (SpawnableMapObject obj in insideObjectList)
+            {
+                if (!indoorObjectDict.ContainsKey(obj.prefabToSpawn.name))
+                {
+                    indoorObjectDict.Add(obj.prefabToSpawn.name, obj.prefabToSpawn);
+                }
+            }
+
+            // Finalize lists
+            foreach (KeyValuePair<string, GameObject> obj in indoorObjectDict) ObjectList.Add(obj.Key, obj.Value);
             foreach (SpawnableOutsideObjectWithRarity obj in outsideObjectList) ObjectList.Add(obj.spawnableObject.prefabToSpawn.name, obj.spawnableObject.prefabToSpawn);
 
             // Check list
@@ -337,6 +369,7 @@ namespace BrutalCompanyMinus
                 daytimeMaxPowerCounts.Add(level.maxDaytimeEnemyPowerCount);
 
                 spawnableMapObjects.Add(level.spawnableMapObjects);
+                indoorMapHazards.Add(level.indoorMapHazards);
 
             }
             generatedOrignalValuesList = true;

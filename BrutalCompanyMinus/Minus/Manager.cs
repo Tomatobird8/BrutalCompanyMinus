@@ -1,27 +1,28 @@
-﻿using JetBrains.Annotations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Unity.Netcode;
-using UnityEngine;
-using HarmonyLib;
-using System.Collections;
-using GameNetcodeStuff;
-using TMPro;
-using System.Reflection.Emit;
-using System.Reflection;
+﻿using BrutalCompanyMinus.Minus.Events;
+using BrutalCompanyMinus.Minus.MonoBehaviours;
 using DigitalRuby.ThunderAndLightning;
-using System.IO;
-using UnityEngine.Events;
+using GameNetcodeStuff;
+using HarmonyLib;
+using JetBrains.Annotations;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-using UnityEngine.AI;
+using System.Text;
 using System.Xml.Linq;
+using TMPro;
+using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Animations.Rigging;
-using BrutalCompanyMinus.Minus.MonoBehaviours;
-using BrutalCompanyMinus.Minus.Events;
+using UnityEngine.Events;
+using static BrutalCompanyMinus.Minus.MEvent;
 
 namespace BrutalCompanyMinus.Minus
 {
@@ -760,6 +761,114 @@ namespace BrutalCompanyMinus.Minus
                 Log.LogError("Exists() on daytimeEnemies failed");
             }
             return false;
+        }
+
+        /// <summary>
+        /// Checks if the hazard type exists in either indoorMapHazards or spawnambleMapObjects.
+        /// </summary>
+        public static bool HazardSpawnExists(Assets.ObjectName name) => DoHazardSpawnExists(Assets.ObjectNameList[name]);
+
+        private static bool DoHazardSpawnExists(string name)
+        {
+            try
+            {
+                if (RoundManager.Instance.currentLevel.spawnableMapObjects.Any(x => x.prefabToSpawn.name == name)) return true;
+            }
+            catch
+            {
+                Log.LogError($"Failed to try to find {name} in spawnableMapObjects");
+            }
+            try
+            {
+                if (RoundManager.Instance.currentLevel.indoorMapHazards.Any(x => x.hazardType.prefabToSpawn.name == name)) return true;
+            }
+            catch
+            {
+                Log.LogError($"Failed to try to find {name} in indoorMapHazards");
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Removes hazard spawns in both indoorMapHazards and spawnableMapObjects.
+        /// </summary>
+        public static void RemoveHazardSpawn(Assets.ObjectName name) => DoRemoveHazardSpawn(Assets.ObjectNameList[name]);
+
+        private static void DoRemoveHazardSpawn(string Name)
+        {
+            AnimationCurve curve = new AnimationCurve(new Keyframe(0f, 0f));
+
+            try
+            {
+                foreach (SpawnableMapObject obj in RoundManager.Instance.currentLevel.spawnableMapObjects)
+                {
+                    if (obj.prefabToSpawn.name == Name)
+                    {
+                        obj.numberToSpawn = curve;
+                    }
+                }
+            }
+            catch
+            {
+                Log.LogError($"Failed to try and set {Name} animation curve to 0 in spawnableMapObjects");
+            }
+
+            try
+            {
+                foreach (IndoorMapHazard obj in RoundManager.Instance.currentLevel.indoorMapHazards)
+                {
+                    if (obj.hazardType.prefabToSpawn.name == Name)
+                    {
+                        obj.numberToSpawn = curve;
+                    }
+                }
+            }
+            catch
+            {
+                Log.LogError($"Failed to try and set {Name} animation curve to 0 in indoorMapHazards");
+            }
+        }
+
+        public class HazardSpawnSettings
+        {
+            public AnimationCurve numberToSpawn;
+            public bool spawnFacingAwayFromWall;
+            public bool spawnFacingWall;
+            public bool spawnWithBackToWall;
+            public bool spawnWithBackFlushAgainstWall;
+            public bool requireDistanceBetweenSpawns;
+            public bool disallowSpawningNearEntrances;
+            public bool allowInMineshaft;
+        }
+
+        public static void AddHazardSpawn(Assets.ObjectName name, HazardSpawnSettings hazardSettings) => DoAddHazardSpawn(Assets.ObjectNameList[name], hazardSettings);
+
+        private static void DoAddHazardSpawn(string Name, HazardSpawnSettings hazardSettings) {
+            RoundManager.Instance.currentLevel.spawnableMapObjects = RoundManager.Instance.currentLevel.spawnableMapObjects.Add(new SpawnableMapObject()
+            {
+                prefabToSpawn = Assets.GetObject(Name),
+                numberToSpawn = hazardSettings.numberToSpawn,
+                spawnFacingAwayFromWall = hazardSettings.spawnFacingAwayFromWall,
+                spawnFacingWall = hazardSettings.spawnFacingWall,
+                spawnWithBackToWall = hazardSettings.spawnWithBackToWall,
+                spawnWithBackFlushAgainstWall = hazardSettings.spawnWithBackFlushAgainstWall,
+                requireDistanceBetweenSpawns = hazardSettings.requireDistanceBetweenSpawns,
+                disallowSpawningNearEntrances = hazardSettings.disallowSpawningNearEntrances
+            });
+            IndoorMapHazard hazard = new IndoorMapHazard();
+            IndoorMapHazardType hazardType = new IndoorMapHazardType();
+
+            hazardType.prefabToSpawn = Assets.GetObject(Name);
+            hazardType.spawnFacingAwayFromWall = hazardSettings.spawnFacingAwayFromWall;
+            hazardType.spawnFacingWall = hazardSettings.spawnFacingWall;
+            hazardType.spawnWithBackToWall = hazardSettings.spawnWithBackToWall;
+            hazardType.spawnWithBackFlushAgainstWall = hazardSettings.spawnWithBackFlushAgainstWall;
+            hazardType.requireDistanceBetweenSpawns = hazardSettings.requireDistanceBetweenSpawns;
+            hazardType.disallowSpawningNearEntrances = hazardSettings.disallowSpawningNearEntrances;
+            hazardType.allowInMineshaft = hazardSettings.allowInMineshaft;
+            hazard.hazardType = hazardType;
+            hazard.numberToSpawn = hazardSettings.numberToSpawn;
+            RoundManager.Instance.currentLevel.indoorMapHazards = RoundManager.Instance.currentLevel.indoorMapHazards.Add(hazard);
         }
 
         /// <summary>

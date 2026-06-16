@@ -156,7 +156,7 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
                 netObject.Despawn(true);
             } catch
             {
-
+                Log.LogError("Failed to destroy network objects.");
             }
         }
 

@@ -53,10 +53,10 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
             TeleportPlayerServerRpc((int)GameNetworkManager.Instance.localPlayerController.playerClientId);
             GameNetworkManager.Instance.localPlayerController.isInsideFactory = isInsideBuilding;
 
-            if(Compatibility.cullFactoryPresent)
-            {
-                Compatibility.cullOnTeleportLocalPlayer.Invoke(null, null);
-            }
+            //if(Compatibility.cullFactoryPresent)
+            //{
+            //    Compatibility.cullOnTeleportLocalPlayer.Invoke(null, null);
+            //}
         }
 
         [ServerRpc(RequireOwnership = false)]
@@ -87,10 +87,10 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
                 SetAudioPreset(playerID);
             }
 
-            if (Compatibility.cullFactoryPresent)
-            {
-                Compatibility.cullOnTeleportOtherPlayer.Invoke(null, new object[] { playerID });
-            }
+            //if (Compatibility.cullFactoryPresent)
+            //{
+            //    Compatibility.cullOnTeleportOtherPlayer.Invoke(null, new object[] { playerID });
+            //}
         }
 
         public void SetAudioPreset(int playerObj)

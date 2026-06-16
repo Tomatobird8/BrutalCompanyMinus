@@ -92,6 +92,26 @@ namespace BrutalCompanyMinus.Minus.Handlers
             }
         }
 
+        [HarmonyPatch(typeof(HoarderBugAI), nameof(HoarderBugAI.DoAIInterval))]
+        [HarmonyPrefix]
+        public static void CleanItemList()
+        {
+            if (!Events.RealityShift.Active) return;
+            List<HoarderBugItem> items = HoarderBugAI.HoarderBugItems;
+            if (items == null || items.Count == 0) return;
+
+            bool needsCleanup = false;
+            for (int i = 0; i < items.Count; i++)
+            {
+                if (items[i] == null || items[i].itemGrabbableObject == null)
+                {
+                    needsCleanup = true;
+                    break;
+                }
+            }
+            if (needsCleanup) items.RemoveAll(item => item == null || item.itemGrabbableObject == null);
+        }
+
         public static IEnumerator GrabShiftedObject(PlayerControllerB instance)
         {
             yield return new WaitUntil(() => shiftedObjects.Count > 0);

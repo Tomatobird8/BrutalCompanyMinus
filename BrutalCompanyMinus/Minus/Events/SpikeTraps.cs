@@ -27,21 +27,22 @@ namespace BrutalCompanyMinus.Minus.Events
             ScaleList.Add(ScaleType.MaxAmount, new Scale(4.0f, 0.12f, 4.0f, 16.0f));
         }
 
-        public override bool AddEventIfOnly() => RoundManager.Instance.currentLevel.spawnableMapObjects.ToList().Exists(x => x.prefabToSpawn.name == Assets.ObjectNameList[Assets.ObjectName.SpikeRoofTrap]);
+        public override bool AddEventIfOnly() => Manager.HazardSpawnExists(Assets.ObjectName.SpikeRoofTrap);
 
         public override void Execute()
         {
-            RoundManager.Instance.currentLevel.spawnableMapObjects = RoundManager.Instance.currentLevel.spawnableMapObjects.Add(new SpawnableMapObject()
+            Manager.HazardSpawnSettings settings = new Manager.HazardSpawnSettings
             {
-                prefabToSpawn = Assets.GetObject(Assets.ObjectName.SpikeRoofTrap),
                 numberToSpawn = new AnimationCurve(new Keyframe(0f, Get(ScaleType.MinAmount)), new Keyframe(1f, Get(ScaleType.MaxAmount))),
-                spawnFacingAwayFromWall = false,
                 spawnFacingWall = true,
+                spawnFacingAwayFromWall = true,
                 spawnWithBackToWall = true,
                 spawnWithBackFlushAgainstWall = true,
                 requireDistanceBetweenSpawns = true,
-                disallowSpawningNearEntrances = false
-            });
+                disallowSpawningNearEntrances = false,
+                allowInMineshaft = false
+            };
+            Manager.AddHazardSpawn(Assets.ObjectName.SpikeRoofTrap, settings);
         }
     }
 }

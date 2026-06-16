@@ -490,7 +490,7 @@ namespace BrutalCompanyMinus
             }
             GrabbableObject instance = netObj.GetComponent<GrabbableObject>();
 
-            GameObject scrap = GameObject.Instantiate(Minus.Handlers.RealityShift.shiftList[0], instance.transform.position, Quaternion.identity);
+            GameObject scrap = GameObject.Instantiate(Minus.Handlers.RealityShift.shiftList[0], instance.transform.position, Quaternion.identity, instance.transform.parent);
             GrabbableObject grabbableObject = scrap.GetComponent<GrabbableObject>();
             if (grabbableObject == null)
             {

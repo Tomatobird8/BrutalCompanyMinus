@@ -36,6 +36,8 @@ namespace BrutalCompanyMinus.Minus.Events
                 new Scale(0.0f, 0.0f, 0.0f, 0.0f))
             };
 
+            ScaleList.Add(ScaleType.ScrapValue, new Scale(1.25f, 0.0125f, 1.25f, 2.5f));
+            ScaleList.Add(ScaleType.ScrapAmount, new Scale(1.15f, 0.006f, 1.15f, 1.75f));
             ScaleList.Add(ScaleType.SpawnMultiplier, new Scale(1.25f, 0.0075f, 1.25f, 2.0f));
             ScaleList.Add(ScaleType.SpawnCapMultiplier, new Scale(1.4f, 0.016f, 1.4f, 3.0f));
         }
@@ -44,6 +46,8 @@ namespace BrutalCompanyMinus.Minus.Events
         {
             ExecuteAllMonsterEvents();
 
+            Manager.scrapValueMultiplier *= Getf(ScaleType.ScrapValue);
+            Manager.scrapAmountMultiplier *= Getf(ScaleType.ScrapAmount);
             Manager.MultiplySpawnChance(RoundManager.Instance.currentLevel, Getf(ScaleType.SpawnMultiplier));
             Manager.MultiplySpawnCap(Getf(ScaleType.SpawnCapMultiplier));
         } 
