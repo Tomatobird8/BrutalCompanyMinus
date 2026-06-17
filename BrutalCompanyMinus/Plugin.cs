@@ -15,7 +15,7 @@ namespace BrutalCompanyMinus
     {
         private const string GUID = "Drinkable.BrutalCompanyMinus";
         private const string NAME = "BrutalCompanyMinus";
-        private const string VERSION = "0.13.15";
+        private const string VERSION = "0.13.16";
         private static readonly Harmony harmony = new Harmony(GUID);
 
         void Awake()
