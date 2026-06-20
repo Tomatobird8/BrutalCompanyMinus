@@ -293,18 +293,34 @@ namespace BrutalCompanyMinus
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(DiscordController), nameof(DiscordController.UpdateStatus))]
-        private static void OnChangeLevel(ref StartOfRound __instance)
+        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.OnPlayerConnectedClientRpc))]
+        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.ArriveAtLevel))]
+        
+        private static void OnChangeLevelPostfix(ref StartOfRound __instance)
+        {
+            ExecuteOnChangeLevel(__instance);
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.SetShipReadyToLand))]
+        private static void OnChangeLevelPrefix(ref StartOfRound __instance)
+        {
+            ExecuteOnChangeLevel(__instance);
+        }
+
+        private static void ExecuteOnChangeLevel(StartOfRound instance)
         {
             if (!NetworkManager.Singleton.IsServer || !canClearText) return;
             try
             {
                 ClearText();
-            } catch
+            }
+            catch
             {
-                __instance.StartCoroutine(ClearAfterDelay());
+                instance.StartCoroutine(ClearAfterDelay());
             }
         }
+        
 
         private static IEnumerator ClearAfterDelay()
         {

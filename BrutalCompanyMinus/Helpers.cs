@@ -300,6 +300,64 @@ namespace BrutalCompanyMinus
             return moonRiskValues;
         }
 
+        internal static SpawnableMapObject CreateCopy(this SpawnableMapObject original)
+        {
+            SpawnableMapObject copy = new SpawnableMapObject
+            {
+                requireDistanceBetweenSpawns = original.requireDistanceBetweenSpawns,
+                disallowSpawningNearEntrances = original.disallowSpawningNearEntrances,
+                spawnFacingAwayFromWall = original.spawnFacingAwayFromWall,
+                spawnFacingWall = original.spawnFacingWall,
+                prefabToSpawn = original.prefabToSpawn,
+                numberToSpawn = new AnimationCurve(original.numberToSpawn.keys),
+                spawnWithBackToWall = original.spawnWithBackToWall,
+                spawnWithBackFlushAgainstWall = original.spawnWithBackFlushAgainstWall
+            };
+
+            return copy;
+        }
+        internal static IndoorMapHazard CreateCopy(this IndoorMapHazard original)
+        {
+            IndoorMapHazard copy = new IndoorMapHazard
+            {
+                hazardType = original.hazardType,
+                numberToSpawn = original.numberToSpawn
+            };
+            return copy;
+        }
+
+        internal static AnimationCurve MultiplyKeyframes(AnimationCurve curve, float multiplier)
+        {
+
+            Keyframe[] keyFrames = curve.keys;
+            for (int i = 0; i < keyFrames.Length; i++)
+            {
+                if (keyFrames[i].value > 0)
+                {
+                    keyFrames[i].value *= multiplier;
+                    keyFrames[i].inTangent *= multiplier;
+                    keyFrames[i].outTangent *= multiplier;
+                }
+            }
+            return new AnimationCurve(keyFrames);
+        }
+
+        internal static AnimationCurve AddKeyframes(AnimationCurve curve, float value)
+        {
+
+            Keyframe[] keyFrames = curve.keys;
+            for (int i = 0; i < keyFrames.Length; i++)
+            {
+                if (keyFrames[i].value > 0)
+                {
+                    keyFrames[i].value += value;
+                    keyFrames[i].inTangent += value;
+                    keyFrames[i].outTangent += value;
+                }
+            }
+            return new AnimationCurve(keyFrames);
+        }
+
         internal static IList<Vector2> ComputeConvexHull(List<Vector2> points, bool sortInPlace = false) // Taken from https://gist.github.com/dLopreiato/7fd142d0b9728518552188794b8a750c
         {
             if (!sortInPlace)

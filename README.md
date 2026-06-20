@@ -1,11 +1,16 @@
 # Brutal Company Minus
-![Screenshot](https://i.imgur.com/jS0vFm2.jpg)
+![Icon](https://i.imgur.com/w6fkZH0.png)
 #### This mod is required on all clients
 #### Makes the game harder, download this mod if you want to suffer occasionally
 #### Config is fully generated when you load on a moon.
 #### Mod is highly configurable
 #### Comes with modded events that only appear with said mods installed
 #### Functions as API, no documentation yet.
+<details>
+  <summary><b>Notice: New maintainers</b></summary>
+  
+  As DrinkableWater has stopped maintaining the mod for newer versions of Lethal Company, Tomatobird8 and MakuAureo have stepped in to provide update support. Brutal Company Minus version 0.13.15 and newer are uploaded by the new maintainers.
+</details>
 
 # Features
 <details>

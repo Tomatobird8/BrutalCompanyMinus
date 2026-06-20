@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
 using Unity.Netcode;
 using UnityEngine;
@@ -69,16 +70,28 @@ namespace BrutalCompanyMinus.Minus.Handlers
 
             Log.LogInfo("Resetting level values before changing.");
 
-            __instance.currentLevel.spawnableMapObjects = Assets.spawnableMapObjects[levelIndex];
-            __instance.currentLevel.indoorMapHazards = Assets.indoorMapHazards[levelIndex];
+            List<SpawnableMapObject> mapobj = new List<SpawnableMapObject>();
+            foreach (SpawnableMapObject o in Assets.spawnableMapObjects[levelIndex])
+            {
+                mapobj.Add(Helper.CreateCopy(o));
+            }
+            __instance.currentLevel.spawnableMapObjects = mapobj.ToArray();
+
+            List<IndoorMapHazard> maphaz = new List<IndoorMapHazard>();
+            foreach (IndoorMapHazard o in Assets.indoorMapHazards[levelIndex])
+            {
+                maphaz.Add(Helper.CreateCopy(o));
+            }
+            __instance.currentLevel.indoorMapHazards = maphaz.ToArray();
 
             // Reset spawn chances
             __instance.currentLevel.enemySpawnChanceThroughoutDay.ClearKeys();
             __instance.currentLevel.outsideEnemySpawnChanceThroughDay.ClearKeys();
             __instance.currentLevel.daytimeEnemySpawnChanceThroughDay.ClearKeys();
-            foreach (Keyframe key in Assets.insideSpawnChanceCurves[levelIndex].keys) __instance.currentLevel.enemySpawnChanceThroughoutDay.AddKey(key);
-            foreach (Keyframe key in Assets.outsideSpawnChanceCurves[levelIndex].keys) __instance.currentLevel.outsideEnemySpawnChanceThroughDay.AddKey(key);
-            foreach (Keyframe key in Assets.daytimeSpawnChanceCurves[levelIndex].keys) __instance.currentLevel.daytimeEnemySpawnChanceThroughDay.AddKey(key);
+
+            __instance.currentLevel.enemySpawnChanceThroughoutDay = new AnimationCurve(Assets.insideSpawnChanceCurves[levelIndex].keys);
+            __instance.currentLevel.outsideEnemySpawnChanceThroughDay = new AnimationCurve(Assets.outsideSpawnChanceCurves[levelIndex].keys);
+            __instance.currentLevel.daytimeEnemySpawnChanceThroughDay = new AnimationCurve(Assets.daytimeSpawnChanceCurves[levelIndex].keys);
 
             Events.GrabbableLandmines.LandmineDisabled = false;
             foreach (MEvent e in EventManager.events) e.Executed = false;

@@ -40,7 +40,7 @@ namespace BrutalCompanyMinus.Minus.Events
                 spawnWithBackFlushAgainstWall = true,
                 requireDistanceBetweenSpawns = true,
                 disallowSpawningNearEntrances = false,
-                allowInMineshaft = false
+                allowInMineshaft = true // evil
             };
             Manager.AddHazardSpawn(Assets.ObjectName.SpikeRoofTrap, settings);
         }

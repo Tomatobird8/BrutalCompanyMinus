@@ -353,11 +353,9 @@ namespace BrutalCompanyMinus
                 }
 
                 // Animation curves list
-                AnimationCurve newInsideSpawnChanceCurve = new AnimationCurve(), newOutsideSpawnChanceCurve = new AnimationCurve(), newDaytimeSpawnChanceCurve = new AnimationCurve();
-
-                foreach (Keyframe key in level.enemySpawnChanceThroughoutDay.keys) newInsideSpawnChanceCurve.AddKey(key);
-                foreach (Keyframe key in level.outsideEnemySpawnChanceThroughDay.keys) newOutsideSpawnChanceCurve.AddKey(key);
-                foreach (Keyframe key in level.daytimeEnemySpawnChanceThroughDay.keys) newDaytimeSpawnChanceCurve.AddKey(key);
+                AnimationCurve newInsideSpawnChanceCurve = new AnimationCurve(level.enemySpawnChanceThroughoutDay.keys);
+                AnimationCurve newOutsideSpawnChanceCurve = new AnimationCurve(level.outsideEnemySpawnChanceThroughDay.keys);
+                AnimationCurve newDaytimeSpawnChanceCurve = new AnimationCurve(level.daytimeEnemySpawnChanceThroughDay.keys);
 
                 insideSpawnChanceCurves.Add(newInsideSpawnChanceCurve);
                 outsideSpawnChanceCurves.Add(newOutsideSpawnChanceCurve);
@@ -368,9 +366,19 @@ namespace BrutalCompanyMinus
                 outsideMaxPowerCounts.Add(level.maxOutsideEnemyPowerCount);
                 daytimeMaxPowerCounts.Add(level.maxDaytimeEnemyPowerCount);
 
-                spawnableMapObjects.Add(level.spawnableMapObjects);
-                indoorMapHazards.Add(level.indoorMapHazards);
+                List<SpawnableMapObject> mapObjects = new List<SpawnableMapObject>();
+                foreach (SpawnableMapObject mapObject in level.spawnableMapObjects)
+                {
+                    mapObjects.Add(Helper.CreateCopy(mapObject));
+                }
+                spawnableMapObjects.Add(mapObjects.ToArray());
 
+                List<IndoorMapHazard> mapHazards = new List<IndoorMapHazard>();
+                foreach (IndoorMapHazard mapHazard in level.indoorMapHazards)
+                {
+                    mapHazards.Add(Helper.CreateCopy(mapHazard));
+                }
+                indoorMapHazards.Add(mapHazards.ToArray());
             }
             generatedOrignalValuesList = true;
         }

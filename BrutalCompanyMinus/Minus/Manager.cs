@@ -240,6 +240,7 @@ namespace BrutalCompanyMinus.Minus
                 if(Events.SafeOutside.Active)
                 {
                     Log.LogInfo("Outside spawning prevented by OutsideSafe");
+                    enemiesToSpawnOutside.Clear();
                     return new List<EnemyAI>();
                 }
                 List<EnemyAI> spawnedEnemies = new List<EnemyAI>();
@@ -563,17 +564,7 @@ namespace BrutalCompanyMinus.Minus
 
         internal static float GetScrapInShip()
         {
-            GameObject hangarShip = Assets.hangarShip;
-            if (hangarShip == null) return 0;
-
-            GrabbableObject[] itemsInShip = hangarShip.GetComponentsInChildren<GrabbableObject>();
-
-            int count = 0;
-            foreach (GrabbableObject item in itemsInShip)
-            {
-                if (item != null) count += item.scrapValue;
-            }
-            return count;
+            return StartOfRound.Instance.GetValueOfAllScrap(onlyScrapCollected: true, onlyNewScrap: false);
         }
 
         internal static void SampleMap()
@@ -856,8 +847,7 @@ namespace BrutalCompanyMinus.Minus
                 disallowSpawningNearEntrances = hazardSettings.disallowSpawningNearEntrances
             });
             IndoorMapHazard hazard = new IndoorMapHazard();
-            IndoorMapHazardType hazardType = new IndoorMapHazardType();
-
+            IndoorMapHazardType hazardType = ScriptableObject.CreateInstance<IndoorMapHazardType>();
             hazardType.prefabToSpawn = Assets.GetObject(Name);
             hazardType.spawnFacingAwayFromWall = hazardSettings.spawnFacingAwayFromWall;
             hazardType.spawnFacingWall = hazardSettings.spawnFacingWall;
@@ -879,54 +869,23 @@ namespace BrutalCompanyMinus.Minus
             spawnChanceMultiplier *= by;
 
             // Inside
-            Keyframe[] insideKeyFrames = new Keyframe[currentLevel.enemySpawnChanceThroughoutDay.keys.Length];
-            for (int i = 0; i < currentLevel.enemySpawnChanceThroughoutDay.keys.Length; i++)
-            {
-                float multiplier = by;
-                if (currentLevel.enemySpawnChanceThroughoutDay.keys[i].value <= 0) multiplier = 1.0f;
-                insideKeyFrames[i] = new Keyframe(currentLevel.enemySpawnChanceThroughoutDay.keys[i].time, currentLevel.enemySpawnChanceThroughoutDay.keys[i].value * multiplier);
-            }
-            currentLevel.enemySpawnChanceThroughoutDay = new AnimationCurve(insideKeyFrames);
+            currentLevel.enemySpawnChanceThroughoutDay = Helper.MultiplyKeyframes(currentLevel.enemySpawnChanceThroughoutDay, by);
 
             // Outside
-            Keyframe[] outsideKeyFrames = new Keyframe[currentLevel.outsideEnemySpawnChanceThroughDay.keys.Length];
-            for (int i = 0; i < currentLevel.outsideEnemySpawnChanceThroughDay.keys.Length; i++)
-            {
-                float multiplier = by;
-                if (currentLevel.outsideEnemySpawnChanceThroughDay.keys[i].value <= 0) multiplier = 1.0f;
-                outsideKeyFrames[i] = new Keyframe(currentLevel.outsideEnemySpawnChanceThroughDay.keys[i].time, currentLevel.outsideEnemySpawnChanceThroughDay.keys[i].value * multiplier);
-            }
-            currentLevel.outsideEnemySpawnChanceThroughDay = new AnimationCurve(outsideKeyFrames);
+            currentLevel.outsideEnemySpawnChanceThroughDay = Helper.MultiplyKeyframes(currentLevel.outsideEnemySpawnChanceThroughDay, by);
 
             // Daytime
-            Keyframe[] daytimeKeyFrames = new Keyframe[currentLevel.daytimeEnemySpawnChanceThroughDay.keys.Length];
-            for (int i = 0; i < currentLevel.daytimeEnemySpawnChanceThroughDay.keys.Length; i++)
-            {
-                float multiplier = by;
-                if (currentLevel.daytimeEnemySpawnChanceThroughDay.keys[i].value <= 0) multiplier = 1.0f;
-                daytimeKeyFrames[i] = new Keyframe(currentLevel.daytimeEnemySpawnChanceThroughDay.keys[i].time, currentLevel.daytimeEnemySpawnChanceThroughDay.keys[i].value * multiplier);
-            }
-            currentLevel.daytimeEnemySpawnChanceThroughDay = new AnimationCurve(daytimeKeyFrames);
+            currentLevel.daytimeEnemySpawnChanceThroughDay = Helper.MultiplyKeyframes(currentLevel.daytimeEnemySpawnChanceThroughDay, by);
         }
 
         internal static void AddInsideSpawnChance(SelectableLevel currentLevel, float value)
         {
-            Keyframe[] insideKeyFrames = new Keyframe[currentLevel.enemySpawnChanceThroughoutDay.keys.Length];
-            for (int i = 0; i < currentLevel.enemySpawnChanceThroughoutDay.keys.Length; i++)
-            {
-                insideKeyFrames[i] = new Keyframe(currentLevel.enemySpawnChanceThroughoutDay.keys[i].time, currentLevel.enemySpawnChanceThroughoutDay.keys[i].value + value);
-            }
-            currentLevel.enemySpawnChanceThroughoutDay = new AnimationCurve(insideKeyFrames);
+            currentLevel.enemySpawnChanceThroughoutDay = Helper.AddKeyframes(currentLevel.enemySpawnChanceThroughoutDay, value);
         }
 
         internal static void AddOutsideSpawnChance(SelectableLevel currentLevel, float value)
         {
-            Keyframe[] outsideKeyFrames = new Keyframe[currentLevel.outsideEnemySpawnChanceThroughDay.keys.Length];
-            for (int i = 0; i < currentLevel.outsideEnemySpawnChanceThroughDay.keys.Length; i++)
-            {
-                outsideKeyFrames[i] = new Keyframe(currentLevel.outsideEnemySpawnChanceThroughDay.keys[i].time, currentLevel.outsideEnemySpawnChanceThroughDay.keys[i].value + value);
-            }
-            currentLevel.outsideEnemySpawnChanceThroughDay = new AnimationCurve(outsideKeyFrames);
+            currentLevel.outsideEnemySpawnChanceThroughDay = Helper.AddKeyframes(currentLevel.outsideEnemySpawnChanceThroughDay, value);
         }
 
         public static void PayCredits(int amount)
