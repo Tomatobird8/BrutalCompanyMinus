@@ -103,7 +103,7 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
                     __instance.transform.parent.gameObject.GetComponent<NetworkObject>().Despawn(destroy: true);
                 } catch
                 {
-
+                    Log.LogError("Failed to despawn Landmine network object.");
                 }
             }
         }
@@ -112,7 +112,6 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
         {
             StartCoroutine(StartIdleAnimation());
             base.Start();
-
             dropSafetyTime = 2.0f;
             mineGrabbed = true;
         }

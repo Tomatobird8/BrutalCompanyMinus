@@ -141,10 +141,9 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
         {
             grabbableObjectsInMap.Clear();
             GrabbableObject[] array = FindObjectsOfType<GrabbableObject>();
-            Debug.Log($"gobjectsin scnee!! : {array.Length}");
             for (int i = 0; i < array.Length; i++)
             {
-                if (array[i].grabbableToEnemies)
+                if (array[i].grabbableToEnemies && !array[i].deactivated)
                 {
                     grabbableObjectsInMap.Add(array[i].gameObject);
                 }
@@ -211,19 +210,6 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
                 ChooseNestPosition();
                 return;
             }
-            if (RealityShift.Active && HoarderBugItems != null && HoarderBugItems.Count != 0) // RealityShift related
-            {
-                bool needsCleanup = false;
-                for (int i = 0; i < HoarderBugItems.Count; i++)
-                {
-                    if (HoarderBugItems[i] == null || HoarderBugItems[i].itemGrabbableObject == null)
-                    {
-                        needsCleanup = true;
-                        break;
-                    }
-                }
-                if (needsCleanup) HoarderBugItems.RemoveAll(item => item == null || item.itemGrabbableObject == null);
-            }
 
             if (HasLineOfSightToPositionCopy(nestPosition, 60f, 40, 0.5f))
             {
@@ -249,6 +235,7 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
                 case 0:
                     {
                         inReturnToNestMode = false;
+                        ExitChaseMode();
                         if (GrabTargetItemIfClose())
                         {
                             break;
@@ -275,6 +262,7 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
                         break;
                     }
                 case 1:
+                    ExitChaseMode();
                     if (!inReturnToNestMode)
                     {
                         inReturnToNestMode = true;
@@ -316,6 +304,7 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
                     break;
                 case 2:
                     inReturnToNestMode = false;
+                    angryTimer = 10f;
                     if (heldItem != null)
                     {
                         DropItemAndCallDropRPC(heldItem.itemGrabbableObject.GetComponent<NetworkObject>(), droppedInNest: false);
@@ -362,6 +351,21 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
             {
                 targetItem = null;
                 Debug.Log(gameObject.name + ": i found an object but cannot reach it (or it has been taken by another bug): " + foundObject.name);
+            }
+        }
+
+        private void ExitChaseMode()
+        {
+            if (inChase)
+            {
+                inChase = false;
+                if (searchForPlayer.inProgress)
+                {
+                    StopSearch(searchForPlayer);
+                }
+                movingTowardsTargetPlayer = false;
+                creatureAnimator.SetBool("Chase", value: false);
+                creatureSFX.Stop();
             }
         }
 
@@ -567,15 +571,9 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
             {
                 watchingPlayer = null;
             }
-            if (IsOwner)
+            if (IsOwner && timeSinceSeeingAPlayer > 2.5f)
             {
-                if (timeSinceSeeingAPlayer > 15f)
-                {
-                }
-                else if (timeSinceSeeingAPlayer > 2.5f)
-                {
-                    lostPlayerInChase = true;
-                }
+                lostPlayerInChase = true;
             }
         }
 
@@ -623,11 +621,6 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
             {
                 return;
             }
-            if (angryTimer >= 0f)
-            {
-                angryTimer -= Time.deltaTime;
-            }
-            if (currentBehaviourStateIndex == 2) doBlowupServerRpc();
             creatureAnimator.SetBool("stunned", stunNormalizedTimer > 0f);
             bool flag = IsHoarderBugAngry();
             if (!isAngry && flag)
@@ -635,12 +628,6 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
                 isAngry = true;
                 creatureVoice.clip = angryVoiceSFX;
                 creatureVoice.Play();
-            }
-            else if (isAngry && !flag)
-            {
-                isAngry = false;
-                angryAtPlayer = null;
-                creatureVoice.Stop();
             }
             switch (currentBehaviourStateIndex)
             {
@@ -675,6 +662,7 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
                 case 2:
                     if (!inChase)
                     {
+                        angryTimer = 10f;
                         inChase = true;
                         creatureSFX.clip = bugFlySFX;
                         creatureSFX.Play();
@@ -684,6 +672,10 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
                         if (Vector3.Distance(transform.position, GameNetworkManager.Instance.localPlayerController.transform.position) < 10f)
                         {
                             GameNetworkManager.Instance.localPlayerController.JumpToFearLevel(0.5f);
+                        }
+                        if (IsOwner)
+                        {
+                            doBlowupServerRpc();
                         }
                     }
                     addPlayerVelocityToDestination = 2f;
@@ -696,11 +688,14 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
                         HoarderBugItem hoarderBugItem = CheckLineOfSightForItem(HoarderBugItemStatus.Returned, 60f, 12, 3f);
                         if (hoarderBugItem != null && !hoarderBugItem.itemGrabbableObject.isHeld)
                         {
+                            SwitchToBehaviourState(0);
                             SetGoTowardsTargetObject(hoarderBugItem.itemGrabbableObject.gameObject);
                         }
                         else
                         {
+                            SwitchToBehaviourState(1);
                         }
+                        ExitChaseMode();
                         break;
                     }
                     if (stunNormalizedTimer > 0f)
@@ -805,7 +800,7 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
             itemGrabbableObject.floorYRot = -1;
             itemGrabbableObject.DiscardItemFromEnemy();
             heldItem = null;
-            if (!droppingInNest)
+            if (!droppingInNest && !grabbableObjectsInMap.Contains(itemGrabbableObject.gameObject))
             {
                 grabbableObjectsInMap.Add(itemGrabbableObject.gameObject);
             }
@@ -869,7 +864,7 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
 
         public override void HitEnemy(int force = 1, PlayerControllerB playerWhoHit = null, bool playHitSFX = false, int hitID = -1)
         {
-            base.HitEnemy(force, playerWhoHit);
+            base.HitEnemy(force, playerWhoHit, playHitSFX, hitID);
             Debug.Log("HA");
             if (!isEnemyDead)
             {
@@ -888,17 +883,35 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
 
         public override void KillEnemy(bool destroy = false)
         {
+            if (searchForItems.inProgress)
+            {
+                StopSearch(searchForItems);
+            }
+            if (searchForPlayer.inProgress)
+            {
+                StopSearch(searchForPlayer);
+            }
             base.KillEnemy();
             DisableBlowupServerRpc();
             agent.speed = 0f;
             creatureVoice.Stop();
             creatureSFX.Stop();
+            if (heldItem != null)
+            {
+                DropItemAndCallDropRPC(heldItem.itemGrabbableObject.GetComponent<NetworkObject>(), droppedInNest: false);
+            }
         }
 
         public HoarderBugItem CheckLineOfSightForItem(HoarderBugItemStatus searchForItemsOfStatus = HoarderBugItemStatus.Any, float width = 45f, int range = 60, float proximityAwareness = -1f)
         {
             for (int i = 0; i < HoarderBugItems.Count; i++)
             {
+                if (HoarderBugItems[i] == null || HoarderBugItems[i].itemGrabbableObject == null)
+                {
+                    HoarderBugItems.RemoveAt(i);
+                    i--;
+                    continue;
+                }
                 if (!HoarderBugItems[i].itemGrabbableObject.grabbableToEnemies || HoarderBugItems[i].itemGrabbableObject.isHeld || searchForItemsOfStatus != HoarderBugItemStatus.Any && HoarderBugItems[i].status != searchForItemsOfStatus)
                 {
                     continue;

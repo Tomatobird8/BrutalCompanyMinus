@@ -34,8 +34,8 @@ namespace BrutalCompanyMinus.Minus.Events
             Manager.HazardSpawnSettings settings = new Manager.HazardSpawnSettings
             {
                 numberToSpawn = new AnimationCurve(new Keyframe(0f, Get(ScaleType.MinAmount)), new Keyframe(1f, Get(ScaleType.MaxAmount))),
-                spawnFacingWall = true,
-                spawnFacingAwayFromWall = false,
+                spawnFacingWall = false,
+                spawnFacingAwayFromWall = true,
                 spawnWithBackToWall = false,
                 spawnWithBackFlushAgainstWall = false,
                 requireDistanceBetweenSpawns = false,

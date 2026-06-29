@@ -62,7 +62,7 @@ namespace BrutalCompanyMinus.Minus.MonoBehaviours
                 }
                 catch
                 {
-
+                    Log.LogError("Failed to despawn Turret network object.");
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BrutalCompanyMinus.Minus.MonoBehaviours;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,8 +38,8 @@ namespace BrutalCompanyMinus.Minus.Events
             Manager.HazardSpawnSettings settings = new Manager.HazardSpawnSettings
             {
                 numberToSpawn = new AnimationCurve(new Keyframe(0f, Get(ScaleType.MinAmount)), new Keyframe(1f, Get(ScaleType.MaxAmount))),
-                spawnFacingWall = true,
-                spawnFacingAwayFromWall = false,
+                spawnFacingWall = false,
+                spawnFacingAwayFromWall = true,
                 spawnWithBackToWall = false,
                 spawnWithBackFlushAgainstWall = false,
                 requireDistanceBetweenSpawns = false,
@@ -48,7 +49,19 @@ namespace BrutalCompanyMinus.Minus.Events
             Manager.AddHazardSpawn(Assets.ObjectName.Turret, settings);
         }
 
-        public override void OnShipLeave() => Active = false;
+        public override void OnShipLeave()
+        {
+            Active = false;
+            GrabbableTurret[] turrets = GameObject.FindObjectsOfType<GrabbableTurret>();
+            foreach (GrabbableTurret turret in turrets)
+            {
+                TerminalAccessibleObject? terminalAccessibleObject = turret.GetComponentInChildren<TerminalAccessibleObject>();
+                if (terminalAccessibleObject != null)
+                {
+                    terminalAccessibleObject.enabled = false;
+                }
+            }
+        }
 
         public override void OnGameStart() => Active = false;
     }

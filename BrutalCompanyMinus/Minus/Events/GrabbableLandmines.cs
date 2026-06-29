@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BrutalCompanyMinus.Minus.MonoBehaviours;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -52,6 +53,15 @@ namespace BrutalCompanyMinus.Minus.Events
         public override void OnShipLeave() {
             Active = false;
             LandmineDisabled = true;
+            GrabbableLandmine[] landmines = GameObject.FindObjectsOfType<GrabbableLandmine>();
+            foreach (GrabbableLandmine landmine in landmines)
+            {
+                TerminalAccessibleObject? terminalAccessibleObject = landmine.GetComponentInChildren<TerminalAccessibleObject>();
+                if (terminalAccessibleObject != null)
+                {
+                    terminalAccessibleObject.enabled = false;
+                }
+            }
         } 
 
         public override void OnGameStart()
