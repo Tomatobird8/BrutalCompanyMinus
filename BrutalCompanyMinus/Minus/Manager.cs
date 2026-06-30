@@ -916,10 +916,11 @@ namespace BrutalCompanyMinus.Minus
             }
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(StartOfRound), "ShipLeave")]
-        private static void OnShipLeave()
+        public static void ExecuteOnShipLeave()
         {
+            moveTime = false;
+            moveTimeAmount = 0.0f;
+            timeSpeedMultiplier = 1.0f;
             TimeOfDay.Instance.globalTimeSpeedMultiplier *= inverseTimeSpeedMultiplier;
             inverseTimeSpeedMultiplier = 1.0f;
         }
