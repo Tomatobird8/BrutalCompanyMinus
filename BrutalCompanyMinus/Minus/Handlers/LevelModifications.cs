@@ -125,6 +125,8 @@ namespace BrutalCompanyMinus.Minus.Handlers
 
             // Reset objectSpawnLists
             Manager.insideObjectsToSpawnOutside.Clear();
+            Manager.enemiesToSpawnInside.Clear();
+            Manager.enemiesToSpawnOutside.Clear();
         }
 
         [HarmonyPrefix]
