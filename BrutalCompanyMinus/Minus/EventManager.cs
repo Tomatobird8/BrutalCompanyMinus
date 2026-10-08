@@ -185,7 +185,7 @@ namespace BrutalCompanyMinus.Minus
             foreach (MEvent e in events) eventsToChooseForm.Add(e);
 
             // Decide how many events to spawn
-            System.Random rng = new System.Random(StartOfRound.Instance.randomMapSeed + 32345 + Environment.TickCount);
+            System.Random rng = new System.Random(StartOfRound.Instance.randomMapSeed + 32345);
             int eventsToSpawn = (int)MEvent.Scale.Compute(Configuration.eventsToSpawn, MEvent.EventType.Neutral) + RoundManager.Instance.GetRandomWeightedIndex(Configuration.weightsForExtraEvents.IntArray(), rng);
             
             foreach(MEvent forcedEvent in forcedEvents)
