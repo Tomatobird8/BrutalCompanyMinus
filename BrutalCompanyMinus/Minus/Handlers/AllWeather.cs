@@ -48,7 +48,7 @@ namespace BrutalCompanyMinus.Minus.Handlers
         [HarmonyPatch(typeof(RoundManager), "SetToCurrentLevelWeather")]
         private static void OnSetToCurrentLevelWeather()
         {
-            if (!Events.AllWeather.Active || RoundManager.Instance.currentLevel.currentWeather == LevelWeatherType.Stormy) return;
+            if (!Events.AllWeather.Active || RoundManager.Instance.currentLevel.currentWeather == LevelWeatherType.Stormy || RoundManager.Instance.currentLevel.currentWeather == LevelWeatherType.Flooded) return;
             TimeOfDay.Instance.currentWeatherVariable = lightningVariable1;
             TimeOfDay.Instance.currentWeatherVariable = LightningVariable2;
         }
